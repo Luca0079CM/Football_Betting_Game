@@ -1,7 +1,8 @@
 public class Main{
     public static void main(String[]args){
         Director d = new Director();
-        d.chooseChampionship(1);
+        Championship serieA = d.chooseChampionship(3);
+        serieA.setRanking();
 
     }
 }

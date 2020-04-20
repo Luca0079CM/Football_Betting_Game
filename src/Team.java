@@ -1,26 +1,44 @@
-public class Team implements Comparable{
+public class Team implements Comparable <Team> {
     private String name;
     private int code;
-    private float strength;
-    private int position;
+    private int championshipCode;
+    private int strength;
+    private Integer points;
 
-    public Team(String name, int code, float strength){
+    public Team(String name, int code, int championshipCode, int strength){
         this.name = name;
         this.code = code;
+        this.championshipCode = championshipCode;
         this.strength = strength;
-        this.position = 0;
-    }
-
-    public int getPosition(){
-        return position;
-    }
-
-    public void setPosition(int p){
-        position = p;
+        this.points = 0;
     }
 
     @Override
-    public int compareTo(Object o) {
-        return getPosition();
+    public int compareTo(Team t) {
+        return this.getPoints().compareTo(t.getPoints());
+    }
+
+    public Integer getPoints(){
+        return points;
+    }
+
+    public void setPoints(int p){
+        points = p;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public int getStrength (){
+        return strength;
+    }
+
+    public int getCode(){
+        return code;
+    }
+
+    public int getChampionshipCode(){
+        return championshipCode;
     }
 }

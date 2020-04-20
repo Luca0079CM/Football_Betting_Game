@@ -7,10 +7,12 @@ public class Director {
             case 1:
                championshipBuilder = new SerieABuilder();
         }
-        if(championshipBuilder!=null) {
+        if(championshipBuilder != null) {
             championshipBuilder.setName();
             championshipBuilder.loadTeams();
-            championshipBuilder.setStrenght();
+        }
+        else {
+            System.out.println("Il numero inserito non corrisponde a nessun campionato");
         }
         return championshipBuilder.getChampionship();
     }

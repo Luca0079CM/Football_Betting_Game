@@ -19,20 +19,19 @@ public class SerieABuilder implements ChampionshipBuilder {
     public void loadTeams(){
         try {
             Scanner scanner = new Scanner(new File("./Championship/seriea"));
-            ArrayList teams = new ArrayList();
+            ArrayList<Team> teams = new ArrayList();
+            int i = 0;
             while(scanner.hasNextLine()){
+                i++;
                 String line = scanner.nextLine();
-                teams.add(line);
+                Team t = new Team(line, i, 0, 10+i);
+                t.setPoints((int)(Math.random()*20));
+                teams.add(t);
             }
             championship.setTeams(teams);
         } catch (FileNotFoundException e) {
             System.out.println("File non trovato");
         }
-    }
-
-    @Override
-    public void setStrenght() {
-
     }
 
     @Override
