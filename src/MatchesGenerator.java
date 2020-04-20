@@ -18,16 +18,20 @@ public class MatchesGenerator {
         while(i < teams.size()/2) {
             int challenger = (int)(Math.random()*(teams.size()));
             if(!teams.get(challenger).getMatched()) {
+                Team cg = teams.get(challenger);
                 int opponent;
                 do {
                     opponent = (int) (Math.random() * (teams.size()));
                 } while (challenger == opponent ||
-                        teams.get(challenger).getTeamsFaced().contains(opponent)||
+                        cg.getTeamsFaced().contains(opponent)||
                         teams.get(opponent).getMatched());
-                teams.get(challenger).setMatched(true);
-                teams.get(opponent).setMatched(true);
-                matches[i][0] = teams.get(challenger).getName();
-                matches[i][1] = teams.get(opponent).getName();
+                Team op = teams.get(opponent);
+                cg.setMatched(true);
+                op.setMatched(true);
+                cg.addTeamsFaced(opponent);
+                op.addTeamsFaced(challenger);
+                matches[i][0] = cg.getName();
+                matches[i][1] = op.getName();
                 i ++;
             }
         }

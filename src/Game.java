@@ -1,9 +1,14 @@
-public class Game {
+public class Game implements Observer{
+    @Override
+    public void update(boolean endGame, boolean endMatches) {
+
+    }
+
     public void play(){
         Director d = new Director();
-        Championship serieA = d.chooseChampionship(1);
-        serieA.setRanking();
-        MatchesGenerator matchesGenerator = new MatchesGenerator(serieA);
+        Championship championship = d.chooseChampionship(1);
+        championship.setRanking();
+        MatchesGenerator matchesGenerator = new MatchesGenerator(championship);
         matchesGenerator.generateMatches();
         matchesGenerator.printMatches();
     }
