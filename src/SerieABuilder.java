@@ -18,14 +18,13 @@ public class SerieABuilder implements ChampionshipBuilder {
     @Override
     public void loadTeams(){
         try {
-            Scanner scanner = new Scanner(new File("./Championship/seriea"));
-            ArrayList<Team> teams = new ArrayList();
+            Scanner scanner = new Scanner(new File("./ChampionshipFiles/seriea"));
+            ArrayList<Team> teams = new ArrayList<>();
             int i = 0;
             while(scanner.hasNextLine()){
                 i++;
                 String line = scanner.nextLine();
-                Team t = new Team(line, i, 0, 10+i);
-                t.setPoints((int)(Math.random()*20));
+                Team t = new Team(line, i, 0, (int)(Math.random()*50));
                 teams.add(t);
             }
             championship.setTeams(teams);

@@ -19,9 +19,12 @@ public class Championship {
 
     public void setRanking(){
         Collections.sort(teams);
-        for (int i = 0; i<teams.size(); i++){
-            System.out.println(teams.get(i).getName()+" "+teams.get(i).getPoints());
+        for (Team t : teams){
+            System.out.println(t.getName()+" "+t.getPoints());
         }
     }
 
+    public ArrayList<Team> getTeams(){
+        return teams;
+    }
 }

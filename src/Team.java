@@ -1,9 +1,13 @@
+import java.util.ArrayList;
+
 public class Team implements Comparable <Team> {
     private String name;
     private int code;
     private int championshipCode;
     private int strength;
     private Integer points;
+    private ArrayList<Integer> teamsFaced = new ArrayList<>();
+    private boolean matched;
 
     public Team(String name, int code, int championshipCode, int strength){
         this.name = name;
@@ -11,6 +15,7 @@ public class Team implements Comparable <Team> {
         this.championshipCode = championshipCode;
         this.strength = strength;
         this.points = 0;
+        this.matched = false;
     }
 
     @Override
@@ -40,5 +45,21 @@ public class Team implements Comparable <Team> {
 
     public int getChampionshipCode(){
         return championshipCode;
+    }
+
+    public boolean getMatched(){
+        return matched;
+    }
+
+    public void setMatched(boolean b){
+        matched = b;
+    }
+
+    public ArrayList<Integer> getTeamsFaced(){
+        return teamsFaced;
+    }
+
+    public void addTeamsFaced(int codeTeam){
+        teamsFaced.add(codeTeam);
     }
 }
