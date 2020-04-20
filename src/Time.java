@@ -2,10 +2,17 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Time {
-    static int interval;
-    static Timer timer;
+    private static Time time;
+    private static int interval;
+    private static Timer timer;
 
-    public static void main(String[] args) {
+    public static Time createTimer(){
+        if(timer==null)
+            time = new Time();
+        return time;
+    }
+
+    private Time(){
         int delay = 1000;
         int period = 1000;
         timer = new Timer();
@@ -18,7 +25,7 @@ public class Time {
         }, delay, period);
     }
 
-    private static final int setInterval() {
+    private static int setInterval() {
         if (interval == 1)
             timer.cancel();
         return --interval;
