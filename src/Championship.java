@@ -19,9 +19,9 @@ public class Championship {
 
     public void setRanking(){
         Collections.sort(teams);
-        for (Team t : teams){
-            System.out.println(t.getName()+" "+t.getPoints());
-        }
+        System.out.println("Squadre del campionato:");
+        for (Team t : teams)
+            System.out.println(t.getName()+" forza:"+t.getStrength()+" punti:"+t.getPoints());
     }
 
     public ArrayList<Team> getTeams(){

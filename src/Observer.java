@@ -1,4 +1,4 @@
 public interface Observer {
-    void update(boolean endMatches, boolean endGame);
+    void update(int totalTime);
 }
 

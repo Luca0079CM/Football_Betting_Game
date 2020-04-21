@@ -3,16 +3,14 @@ import java.util.ArrayList;
 public class Team implements Comparable <Team> {
     private String name;
     private int code;
-    private int championshipCode;
     private int strength;
     private Integer points;
     private ArrayList<Integer> teamsFaced = new ArrayList<>();
     private boolean matched;
 
-    public Team(String name, int code, int championshipCode, int strength){
+    public Team(String name, int code, int strength){
         this.name = name;
         this.code = code;
-        this.championshipCode = championshipCode;
         this.strength = strength;
         this.points = 0;
         this.matched = false;
@@ -41,10 +39,6 @@ public class Team implements Comparable <Team> {
 
     public int getCode(){
         return code;
-    }
-
-    public int getChampionshipCode(){
-        return championshipCode;
     }
 
     public boolean getMatched(){

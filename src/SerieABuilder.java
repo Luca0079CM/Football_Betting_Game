@@ -24,7 +24,7 @@ public class SerieABuilder implements ChampionshipBuilder {
             while(scanner.hasNextLine()){
                 i++;
                 String line = scanner.nextLine();
-                Team t = new Team(line, i, 0, (int)(Math.random()*50));
+                Team t = new Team(line, i, (int)(Math.random()*((100 - 25)+1)+25));
                 teams.add(t);
             }
             championship.setTeams(teams);

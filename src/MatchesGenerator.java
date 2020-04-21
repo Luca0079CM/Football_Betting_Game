@@ -1,19 +1,18 @@
 import java.util.ArrayList;
 
 public class MatchesGenerator {
-    private Championship championship;
-    private String[][] matches;
+    private ArrayList<Match> matches;
+    private ArrayList<Team> teams;
 
     public MatchesGenerator(Championship championship){
-        this.championship = championship;
+        teams = championship.getTeams();
     }
 
-    public void generateMatches(){
-        ArrayList<Team> teams = championship.getTeams();
+    public ArrayList<Match> generateMatches(){
         for(Team t : teams){
             t.setMatched(false);
         }
-        matches = new String[teams.size()][2];
+        matches = new ArrayList<>();
         int i = 0;
         while(i < teams.size()/2) {
             int challenger = (int)(Math.random()*(teams.size()));
@@ -30,20 +29,18 @@ public class MatchesGenerator {
                 op.setMatched(true);
                 cg.addTeamsFaced(opponent);
                 op.addTeamsFaced(challenger);
-                matches[i][0] = cg.getName();
-                matches[i][1] = op.getName();
+                matches.add(new Match(i, cg, op));
                 i ++;
             }
         }
+        return matches;
     }
 
     public void printMatches(){
         System.out.println("\nMatches:");
-        for(int i = 0; i < championship.getTeams().size()/2; i++){
-            System.out.println(matches[i][0]+"-"+matches[i][1]);
-        }
+        for(Match m : matches)
+            m.printMatch();
         System.out.println("\n");
     }
-
  }
 
