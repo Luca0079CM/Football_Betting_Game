@@ -1,38 +1,42 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class MatchesGenerator {
     private ArrayList<Match> matches;
-    private ArrayList<Team> teams;
+    private int nTeams;
+    private ArrayList<Team> casa;
+    private ArrayList<Team> trasferta;
+    private static int alternator = 0;
+    private static int code = 0;
 
     public MatchesGenerator(Championship championship){
-        teams = championship.getTeams();
+        ArrayList<Team> teams = championship.getTeams();
+        nTeams = teams.size();
+        Collections.shuffle(teams);
+        casa = new ArrayList<>();
+        trasferta = new ArrayList<>();
+        for (int i = 0; i < nTeams /2; i++) {
+            casa.add(teams.get(i));
+            trasferta.add(teams.get(teams.size()-1-i));
+        }
     }
 
     public ArrayList<Match> generateMatches(){
-        for(Team t : teams){
-            t.setMatched(false);
+        matches= new ArrayList<>();
+        if (alternator % 2 == 1) {
+            for (int j = 0; j < nTeams /2 ; j++)
+                matches.add(new Match(++code, trasferta.get(j), casa.get(j)));
+        }else {
+            for (int j = 0; j < nTeams /2 ; j++)
+                matches.add(new Match(++code, casa.get(j), trasferta.get(j)));
+
         }
-        matches = new ArrayList<>();
-        int i = 0;
-        while(i < teams.size()/2) {
-            int challenger = (int)(Math.random()*(teams.size()));
-            if(!teams.get(challenger).getMatched()) {
-                Team cg = teams.get(challenger);
-                int opponent;
-                do {
-                    opponent = (int) (Math.random() * (teams.size()));
-                } while (challenger == opponent ||
-                        cg.getTeamsFaced().contains(opponent)||
-                        teams.get(opponent).getMatched());
-                Team op = teams.get(opponent);
-                cg.setMatched(true);
-                op.setMatched(true);
-                cg.addTeamsFaced(opponent);
-                op.addTeamsFaced(challenger);
-                matches.add(new Match(i, cg, op));
-                i ++;
-            }
-        }
+        trasferta.add(0, casa.get(1));
+        Team riporto = trasferta.remove(trasferta.size()-1);
+        casa.remove(1);
+        casa.add(riporto);
+        alternator++;
+
         return matches;
     }
 
@@ -42,5 +46,5 @@ public class MatchesGenerator {
             m.printMatch();
         System.out.println("\n");
     }
- }
+}
 

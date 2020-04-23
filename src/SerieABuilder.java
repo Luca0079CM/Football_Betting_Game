@@ -22,10 +22,10 @@ public class SerieABuilder implements ChampionshipBuilder {
             ArrayList<Team> teams = new ArrayList<>();
             int i = 0;
             while(scanner.hasNextLine()){
-                i++;
                 String line = scanner.nextLine();
                 Team t = new Team(line, i, (int)(Math.random()*((100 - 25)+1)+25));
                 teams.add(t);
+                i++;
             }
             championship.setTeams(teams);
         } catch (FileNotFoundException e) {
