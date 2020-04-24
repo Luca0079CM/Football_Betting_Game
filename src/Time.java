@@ -3,7 +3,7 @@ import java.util.TimerTask;
 
 public class Time extends Subject {
     private static Time time;
-    private int matchTime;
+    private static int matchTime;
     private static Timer timer;
     private static int delay;
     private static int period;
@@ -18,7 +18,7 @@ public class Time extends Subject {
         observer = game;
         delay = 1000;
         period = 1000;
-        resetTimer(121);
+        resetTimer();
     }
 
     private void setTime() {
@@ -30,6 +30,7 @@ public class Time extends Subject {
         }
         if(matchTime == 1) {
             _notify();
+            resetTimer();
         }
         matchTime--;
     }
@@ -45,8 +46,8 @@ public class Time extends Subject {
         timer.scheduleAtFixedRate(timerTask, delay, period);
     }
 
-    public void resetTimer(int matchTime){
-        this.matchTime = matchTime;
+    public void resetTimer(){
+        matchTime = 110;
     }
 
     public void stop() {
