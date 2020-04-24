@@ -1,3 +1,4 @@
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -12,6 +13,7 @@ public class Game implements Observer {
     private float money;
     private int moneyBet;
     private ArrayList<Result> pools;
+    private DecimalFormat df = new DecimalFormat("##.##");
 
     public Game() {
         time = Time.createTimer(this);
@@ -20,6 +22,7 @@ public class Game implements Observer {
         time.start();
         input = new Scanner(System.in);
         pools = new ArrayList<>();
+        money = 10;
         moneyBet = 0;
     }
 
@@ -66,13 +69,16 @@ public class Game implements Observer {
             newMatches();
             timeUp = false;
             input = new Scanner(System.in);
+            time.resetTimer(121);
+            showMenu();
         }
     }
 
     private void showMenu(){
         boolean wait = false;
+
         while (!timeUp && !wait) {
-            System.out.println("\nPortafoglio:"+money+" euro");
+            System.out.println("\nPortafoglio:"+df.format(money)+" euro");
             System.out.println("Che operazione vuoi fare? (Digita il numero corrispondente)");
             System.out.println("1-Vedi i match della giornata n°" + (playedMatches + 1));
             System.out.println("2-Scommetti su un match della giornata");
@@ -91,15 +97,26 @@ public class Game implements Observer {
                     bet();
                     break;
                 case 3:
+                    for(Result b : pools) {
+                        for(Match m : currentMatches){
+                            if(m.getCode() == b.getMatchCode()) {
+                                System.out.println();
+                                m.printMatch();
+                                System.out.println("Scommessa: "+b.getResult());
+                            }
+                        }
+                    }
                     break;
                 case 4:
                     wait = true;
+                    System.out.println("Ok! Attendi il prossimo turno");
                     break;
                 case 5:
                     System.out.println("Sono accettati solo importi interi");
                     Scanner sc = new Scanner(System.in);
                     moneyBet = sc.nextInt();
                     //Controllo inserimento errato
+                    money -= moneyBet;
                     break;
             }
         }
@@ -114,7 +131,8 @@ public class Game implements Observer {
     private int checkPools(ArrayList<Result> results, ArrayList<Result> bets, int moneyBet){
         boolean win = true;
         for(Result b : bets){
-            if(!results.contains(b) || bets.isEmpty()){
+            if(!results.contains(b)){
+                System.out.println("\nPeccato, non hai vinto");
                 win = false;
                 break;
             }
@@ -133,6 +151,7 @@ public class Game implements Observer {
                     }
                 }
             }
+            System.out.println("\nComplimenti!! Hai vinto "+df.format(moneyBet)+" euro");
         }else
             moneyBet = 0;
 
