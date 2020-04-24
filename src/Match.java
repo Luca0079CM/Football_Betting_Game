@@ -1,3 +1,5 @@
+import java.text.DecimalFormat;
+
 public class Match {
     private int code;
     private Team home;
@@ -12,10 +14,10 @@ public class Match {
         this.home = home;
         this.away = away;
         simulated = false;
-        bet = new Bet(home.getStrength(), away.getStrength());
+        bet = new Bet(code, home.getStrength(), away.getStrength());
     }
 
-    public void simulateMatch(){
+    public String simulateMatch(){
         simulated = true;
         for(int i=0;i<10;i++){
             if(home.getStrength()>=Math.random()*300)
@@ -23,20 +25,37 @@ public class Match {
             if(away.getStrength()>=Math.random()*300)
                 resultAway++;
         }
-        if(resultHome>resultAway)
+        if(resultHome>resultAway) {
             home.addPoints(3);
-        else if(resultHome<resultAway)
+            return "1";
+        }
+        else if(resultHome<resultAway) {
             away.addPoints(3);
+            return "2";
+        }
         else {
             home.addPoints(1);
             away.addPoints(1);
+            return "X";
         }
     }
 
     public void printMatch(){
         if(simulated)
-            System.out.println("Codice "+" "+code+" "+home.getName()+" "+away.getName()+" "+resultHome+"-"+resultAway);
-        else
-            System.out.println("Codice"+" "+code+" "+home.getName()+" "+away.getName());
+            System.out.println("\nCodice "+" "+code+" "+home.getName()+" "+away.getName()+" "+resultHome+"-"+resultAway);
+        else {
+            System.out.println("\nCodice" + " " + code + " " + home.getName() + " " + away.getName());
+            double[] tmp = bet.getQuotes();
+            DecimalFormat df = new DecimalFormat("##.##");
+            System.out.println("Quote: 1-"+df.format(tmp[0])+"  X-"+df.format(tmp[1])+"  2-"+df.format(tmp[2]));
+        }
+    }
+
+    public int getCode(){
+        return code;
+    }
+
+    public Bet getBet(){
+        return bet;
     }
 }

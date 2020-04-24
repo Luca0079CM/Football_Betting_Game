@@ -21,8 +21,9 @@ public class MatchesGenerator {
         }
     }
 
+    //Algoritmo di Berger
     public ArrayList<Match> generateMatches(){
-        matches= new ArrayList<>();
+        matches = new ArrayList<>();
         if (alternator % 2 == 1) {
             for (int j = 0; j < nTeams /2 ; j++)
                 matches.add(new Match(++code, trasferta.get(j), casa.get(j)));
@@ -36,7 +37,6 @@ public class MatchesGenerator {
         casa.remove(1);
         casa.add(riporto);
         alternator++;
-
         return matches;
     }
 

@@ -1,11 +1,13 @@
 public class Bet {
+    private int code;
     private int homeStrenght;
     private int awayStrenght;
     private double quote1, quoteX, quote2;
     private static final int n = 10;
     private static final int max = 300;
 
-    public Bet(int homeStrenght, int awayStrenght){
+    public Bet(int code, int homeStrenght, int awayStrenght){
+        this.code = code;
         this.homeStrenght = homeStrenght;
         this.awayStrenght = awayStrenght;
         createBet();
@@ -25,8 +27,8 @@ public class Bet {
 
 
         for(int i=0; i<=n; i++) {
-            probCasa[i] = bernoulli(n, i, pHome, qHome);
-            probTras[i] = bernoulli(n,i,pAway,qAway);
+            probCasa[i] = bernoulli(i, pHome, qHome);
+            probTras[i] = bernoulli(i,pAway,qAway);
         }
 
         for (int i=0; i<=n; i++){
@@ -45,7 +47,7 @@ public class Bet {
         quote2 = 1.1/prob2;
     }
 
-    private float bernoulli(int n, int k, float p, float q) {
+    private float bernoulli(int k, float p, float q) {
         float prob= (float)(factorial(n) / (factorial(k)* factorial(n-k)) );
         for(int i=0;i<k;i++) {
             prob *= p;
@@ -63,12 +65,16 @@ public class Bet {
             return(n* factorial(n-1));
     }
 
-    public double[] getBet(){
+    public double[] getQuotes(){
         double[] tmp = new double[3];
         tmp[0] = quote1;
         tmp[1] = quoteX;
         tmp[2] = quote2;
         return tmp;
+    }
+
+    public int getCode() {
+        return code;
     }
 }
 

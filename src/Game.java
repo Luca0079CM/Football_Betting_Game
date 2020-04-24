@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Game implements Observer {
     private Championship championship;
@@ -6,13 +7,20 @@ public class Game implements Observer {
     private MatchesGenerator matchesGenerator;
     private int playedMatches;
     private Time time;
-    private int money;
+    private Scanner input;
+    private boolean timeUp = false;
+    private float money;
+    private int moneyBet;
+    private ArrayList<Result> pools;
 
     public Game() {
         time = Time.createTimer(this);
         chooseChampionship(1);
         championship.setRanking();
         time.start();
+        input = new Scanner(System.in);
+        pools = new ArrayList<>();
+        moneyBet = 0;
     }
 
     public void chooseChampionship(int c) {
@@ -20,8 +28,10 @@ public class Game implements Observer {
         switch (c) {
             default:
                 championshipBuilder = null;
+                break;
             case 1:
                 championshipBuilder = new SerieABuilder();
+                break;
         }
         if (championshipBuilder != null) {
             championshipBuilder.setName();
@@ -35,24 +45,121 @@ public class Game implements Observer {
 
     @Override
     public void update() {
+        timeUp = true;
+        input.close();
+        ArrayList<Result> results = new ArrayList<>();
         for (Match m : currentMatches) {
-            m.simulateMatch();
+            results.add(new Result(m.getCode(), m.simulateMatch()));
             m.printMatch();
         }
+        money += checkPools(results, pools, moneyBet);
         playedMatches++;
         championship.setRanking();
-
+        moneyBet = 0;
+        pools.clear();
         if (playedMatches == championship.getTeams().size() - 1) {
             System.out.println("---------FINE CAMPIONATO----------");
             System.out.println("Classifica finale:");
             championship.setRanking();
             time.stop();
-        }else
+        }else {
             newMatches();
+            timeUp = false;
+            input = new Scanner(System.in);
+        }
+    }
+
+    private void showMenu(){
+        boolean wait = false;
+        while (!timeUp && !wait) {
+            System.out.println("\nPortafoglio:"+money+" euro");
+            System.out.println("Che operazione vuoi fare? (Digita il numero corrispondente)");
+            System.out.println("1-Vedi i match della giornata n°" + (playedMatches + 1));
+            System.out.println("2-Scommetti su un match della giornata");
+            System.out.println("3-Vedi la schedina");
+            System.out.println("4-Attendi i match");
+            System.out.println("5-Inserisci l'importo da scommettere");
+            int c = input.nextInt();
+            switch (c) {
+                default:
+                    System.out.println("Non c'è nessun operazione corrispondente al numero inserito");
+                    break;
+                case 1:
+                    matchesGenerator.printMatches();
+                    break;
+                case 2:
+                    bet();
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    wait = true;
+                    break;
+                case 5:
+                    System.out.println("Sono accettati solo importi interi");
+                    Scanner sc = new Scanner(System.in);
+                    moneyBet = sc.nextInt();
+                    //Controllo inserimento errato
+                    break;
+            }
+        }
     }
 
     public void newMatches() {
         currentMatches = matchesGenerator.generateMatches();
         matchesGenerator.printMatches();
+        showMenu();
+    }
+
+    private int checkPools(ArrayList<Result> results, ArrayList<Result> bets, int moneyBet){
+        boolean win = true;
+        for(Result b : bets){
+            if(!results.contains(b) || bets.isEmpty()){
+                win = false;
+                break;
+            }
+        }
+        if(win){
+            for (Result b : bets) {
+                for(Match m : currentMatches){
+                    if(b.getMatchCode() == m.getCode()) {
+                        String s = b.getResult();
+                        if(s.equals("1"))
+                            moneyBet*=m.getBet().getQuotes()[0];
+                        else if(s.equals("X"))
+                            moneyBet*=m.getBet().getQuotes()[1];
+                        else if(s.equals("2"))
+                            moneyBet*=m.getBet().getQuotes()[2];
+                    }
+                }
+            }
+        }else
+            moneyBet = 0;
+
+        return moneyBet;
+    }
+
+    private void bet(){
+        System.out.println("Inserisci il codice della partita su cui vuoi scommettere:");
+        Scanner sc = new Scanner(System.in);
+        int code = sc.nextInt();
+        boolean found = false;
+        for (Match m : currentMatches){
+            if (code == m.getCode()){
+                found = true;
+                System.out.println("Match trovato! Inserisci la scommessa:");
+                break;
+            }
+        }
+        if (!found){
+            System.out.println("Il codice inserito non corrisponde a nessun match della giornata, riprova");
+        }else{
+            String s = sc.next();
+            if (s.equals("1")||s.equals("X")||s.equals("2")){
+                pools.add(new Result(code, s));
+            }else {
+                System.out.println("Scommessa non valida!");
+            }
+        }
     }
 }
