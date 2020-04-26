@@ -38,7 +38,7 @@ class Time extends Subject {
     }
 
     void resetTimer(){
-        matchTime = 41;
+        matchTime = 91;
     }
 
     void stop() {

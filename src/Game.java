@@ -26,7 +26,9 @@ public class Game implements Observer {
     }
 
     private void chooseChampionship(){
-        System.out.println("Benvenuto nel gioco, scegli un campionato digitando il numero corrispondente");
+        System.out.println("Benvenuto nel gioco, il tuo obbiettivo e scommettere" +
+                "\nsulle partite di un campionato a tua scelta e arrivare" +
+                "a guadagnare 1.000 euro\nScegli un campionato digitando il numero corrispondente");
         System.out.println("1 - Serie A (Italia)");
         System.out.println("2 - Premier League (Inghilterra)");
         System.out.println("3 - LaLiga (Spagna)");
@@ -110,6 +112,11 @@ public class Game implements Observer {
                 System.out.println("---------FINE CAMPIONATO----------");
                 System.out.println("Classifica finale:");
                 championship.setRanking();
+                if(money>=1000)
+                    System.out.println("COMPLIMENTI! Hai raggiunto l'obbiettivo");
+                else
+                    System.out.println("Peccato, sarai più fortunato la prossima volta");
+                System.out.println("\nSoldi nel portafoglio:"+df.format(money));
                 time.stop();
                 end = true;
                 mutex.release();
@@ -181,7 +188,6 @@ public class Game implements Observer {
                         break;
                     case 4:
                         System.out.println("Ok! Attendi il prossimo turno");
-                        System.out.println("----ATTENZIONE---- Non inserire altri comandi o il gioco terminerà a inizio dei nuovi match");
                         mutex.acquire();
                         break;
                     case 5:
@@ -276,13 +282,18 @@ public class Game implements Observer {
             System.out.println("Il codice inserito non corrisponde a nessun match della giornata, riprova");
         }else{
             String s = sc.next();
+            boolean alreadyBet = false;
             if (s.equals("1")||s.equals("X")||s.equals("2")){
                 for(Result b : pools){
-                    if(code==b.getMatchCode() && s.equals(b.getResult())){
-                        System.out.println("La scommessa inserita è già presente nella schedina");
-                    }else {
-                        pools.add(new Result(code, s));
+                    if(code == b.getMatchCode() && s.equals(b.getResult())){
+                        alreadyBet = true;
+                        break;
                     }
+                }
+                if(alreadyBet) {
+                    System.out.println("La scommessa inserita è già presente nella schedina");
+                }else {
+                    pools.add(new Result(code, s));
                 }
             }else {
                 System.out.println("Scommessa non valida!");
