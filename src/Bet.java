@@ -1,13 +1,11 @@
-public class Bet {
-    private int code;
+class Bet {
     private int homeStrenght;
     private int awayStrenght;
     private double quote1, quoteX, quote2;
     private static final int n = 10;
     private static final int max = 300;
 
-    public Bet(int code, int homeStrenght, int awayStrenght){
-        this.code = code;
+    Bet(int homeStrenght, int awayStrenght){
         this.homeStrenght = homeStrenght;
         this.awayStrenght = awayStrenght;
         createBet();
@@ -65,16 +63,12 @@ public class Bet {
             return(n* factorial(n-1));
     }
 
-    public double[] getQuotes(){
+    double[] getQuotes(){
         double[] tmp = new double[3];
         tmp[0] = quote1;
         tmp[1] = quoteX;
         tmp[2] = quote2;
         return tmp;
-    }
-
-    public int getCode() {
-        return code;
     }
 }
 

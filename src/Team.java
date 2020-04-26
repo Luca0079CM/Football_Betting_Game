@@ -1,13 +1,11 @@
 public class Team implements Comparable <Team> {
     private String name;
-    private int code;
     private int strength;
     private Integer points;
 
 
-    public Team(String name, int code, int strength){
+    Team(String name, int code, int strength){
         this.name = name;
-        this.code = code;
         this.strength = strength;
         this.points = 0;
     }
@@ -17,23 +15,19 @@ public class Team implements Comparable <Team> {
         return this.getPoints().compareTo(t.getPoints());
     }
 
-    public Integer getPoints(){
+    Integer getPoints(){
         return points;
     }
 
-    public void addPoints(int p){
+    void addPoints(int p){
         points += p;
     }
 
-    public String getName(){
+    String getName(){
         return name;
     }
 
-    public int getStrength (){
+    int getStrength (){
         return strength;
-    }
-
-    public int getCode(){
-        return code;
     }
 }

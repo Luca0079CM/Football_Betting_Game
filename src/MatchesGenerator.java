@@ -1,15 +1,14 @@
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class MatchesGenerator {
-    private ArrayList<Match> matches;
+class MatchesGenerator {
     private int nTeams;
     private ArrayList<Team> casa;
     private ArrayList<Team> trasferta;
     private static int alternator = 0;
     private static int code = 0;
 
-    public MatchesGenerator(Championship championship){
+    MatchesGenerator(Championship championship){
         ArrayList<Team> teams = championship.getTeams();
         nTeams = teams.size();
         Collections.shuffle(teams);
@@ -22,8 +21,8 @@ public class MatchesGenerator {
     }
 
     //Algoritmo di Berger
-    public ArrayList<Match> generateMatches(){
-        matches = new ArrayList<>();
+    ArrayList<Match> generateMatches(){
+        ArrayList<Match> matches = new ArrayList<>();
         if (alternator % 2 == 1) {
             for (int j = 0; j < nTeams /2 ; j++)
                 matches.add(new Match(++code, trasferta.get(j), casa.get(j)));

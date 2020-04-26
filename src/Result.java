@@ -1,17 +1,17 @@
-public class Result {
+class Result {
     private int matchCode;
     private String result;
 
-    public Result(int matchCode, String result){
+    Result(int matchCode, String result){
         this.matchCode = matchCode;
         this.result = result;
     }
 
-    public int getMatchCode(){
+    int getMatchCode(){
         return matchCode;
     }
 
-    public String getResult(){
+    String getResult(){
         return result;
     }
 }

@@ -3,20 +3,20 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class ChampionshipFactory {
+class ChampionshipFactory {
     private Championship championship;
     private String fileLocation;
 
-    public ChampionshipFactory(String fileLocation){
+    ChampionshipFactory(String fileLocation){
         this.fileLocation = fileLocation;
         this.championship = new Championship();
     }
 
-    public void setChampionshipName(String name){
+    void setChampionshipName(String name){
         championship.setName(name);
     }
 
-    public void loadTeams(){
+    void loadTeams(){
         try {
             Scanner scanner = new Scanner(new File(fileLocation));
             ArrayList<Team> teams = new ArrayList<>();
@@ -32,7 +32,8 @@ public class ChampionshipFactory {
             System.out.println("File non trovato");
         }
     }
-    public Championship getChampionship(){
+
+    Championship getChampionship(){
         return championship;
     }
 }

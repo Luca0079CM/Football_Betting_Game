@@ -17,7 +17,7 @@ public class Game implements Observer {
     private Semaphore mutex = new Semaphore(0);
     private boolean end = false;
 
-    public Game() {
+    Game() {
         time = Time.createTimer(this);
         pools = new ArrayList<>();
         money = 10;
@@ -33,8 +33,14 @@ public class Game implements Observer {
         System.out.println("4 - Bundesliga (Germania)");
         System.out.println("5 - Ligue 1 (Francia)");
         System.out.println("6 - Serie B  (Italia)");
-        Scanner sc = new Scanner(System.in);
-        int c = sc.nextInt();
+        int c = 0;
+        try {
+            Scanner sc = new Scanner(System.in);
+            c = sc.nextInt();
+        } catch (Exception e) {
+            System.out.println("Il numero inserito non corrisponde a nessun campionato");
+            System.exit(0);
+        }
         ChampionshipFactory championshipFactory;
         switch (c) {
             default:
@@ -51,6 +57,18 @@ public class Game implements Observer {
             case 3:
                 championshipFactory = new ChampionshipFactory("./ChampionshipFiles/laliga");
                 championshipFactory.setChampionshipName("La Liga");
+                break;
+            case 4:
+                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/bundesliga");
+                championshipFactory.setChampionshipName("Bundesliga");
+                break;
+            case 5:
+                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/ligue1");
+                championshipFactory.setChampionshipName("Ligue 1");
+                break;
+            case 6:
+                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/serieb");
+                championshipFactory.setChampionshipName("Serie B");
                 break;
         }
         if (championshipFactory != null) {
@@ -101,7 +119,7 @@ public class Game implements Observer {
                 end = true;
                 mutex.release();
             }else {
-                waitSec(10);
+                waitSec(7);
                 newMatches();
                 time.resetTimer();
                 mutex.release();
@@ -188,7 +206,7 @@ public class Game implements Observer {
         }
     }
 
-    public void newMatches() {
+    void newMatches() {
         currentMatches = matchesGenerator.generateMatches();
         printMatches();
         try {
@@ -220,12 +238,15 @@ public class Game implements Observer {
                 for(Match m : currentMatches){
                     if(b.getMatchCode() == m.getCode()) {
                         String s = b.getResult();
-                        if(s.equals("1"))
-                            moneyBet*=m.getBet().getQuotes()[0];
-                        else if(s.equals("X"))
-                            moneyBet*=m.getBet().getQuotes()[1];
-                        else if(s.equals("2"))
-                            moneyBet*=m.getBet().getQuotes()[2];
+                        switch (s) {
+                            case "1":
+                                moneyBet *= m.getBet().getQuotes()[0];
+                                break;
+                            case "X":
+                                moneyBet *= m.getBet().getQuotes()[1];
+                            case "2":
+                                moneyBet *= m.getBet().getQuotes()[2];
+                        }
                     }
                 }
             }
@@ -245,6 +266,9 @@ public class Game implements Observer {
             if (code == m.getCode()){
                 found = true;
                 System.out.println("Match trovato! Inserisci la scommessa:");
+                System.out.println("1-Vittoria della squadra di casa");
+                System.out.println("X-Pareggio");
+                System.out.println("2-Vittoria della squadra ospite");
                 break;
             }
         }
@@ -253,7 +277,13 @@ public class Game implements Observer {
         }else{
             String s = sc.next();
             if (s.equals("1")||s.equals("X")||s.equals("2")){
-                pools.add(new Result(code, s));
+                for(Result b : pools){
+                    if(code==b.getMatchCode() && s.equals(b.getResult())){
+                        System.out.println("La scommessa inserita è già presente nella schedina");
+                    }else {
+                        pools.add(new Result(code, s));
+                    }
+                }
             }else {
                 System.out.println("Scommessa non valida!");
             }
@@ -268,7 +298,7 @@ public class Game implements Observer {
         }
     }
 
-    public void printMatches(){
+    private void printMatches(){
         System.out.println("\nMatches:");
         for(Match m : currentMatches)
             m.printMatch();

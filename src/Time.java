@@ -1,14 +1,14 @@
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Time extends Subject {
+class Time extends Subject {
     private static Time time;
     private static int matchTime;
     private static Timer timer;
     private static int delay;
     private static int period;
 
-    public static Time createTimer(Game game){
+    static Time createTimer(Game game){
         if(timer==null)
             time = new Time(game);
         return time;
@@ -26,7 +26,7 @@ public class Time extends Subject {
         matchTime--;
     }
 
-    public void start(){
+    void start(){
         timer = new Timer();
         TimerTask timerTask = new TimerTask() {
             @Override
@@ -37,15 +37,15 @@ public class Time extends Subject {
         timer.scheduleAtFixedRate(timerTask, delay, period);
     }
 
-    public void resetTimer(){
+    void resetTimer(){
         matchTime = 41;
     }
 
-    public void stop() {
+    void stop() {
         timer.cancel();
     }
 
-    public int getMatchTime(){
+    int getMatchTime(){
         return matchTime;
     }
 }
