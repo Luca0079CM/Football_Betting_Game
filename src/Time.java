@@ -22,16 +22,7 @@ public class Time extends Subject {
     }
 
     private void setTime() {
-        if(matchTime%30 == 0){
-            System.out.println("Rimangono "+matchTime+" secondi all'inizio della prossima giornata!");
-        }
-        if(matchTime == 20){
-            System.out.println("Rimangono solo 20 secondi all'inizio della prossima giornata!\nAffrettati a completare le tue operazioni, ricorda che non verranno conteggiate dopo la fine del tempo");
-        }
-        if(matchTime == 1) {
-            _notify();
-            resetTimer();
-        }
+        _notify();
         matchTime--;
     }
 
@@ -47,10 +38,14 @@ public class Time extends Subject {
     }
 
     public void resetTimer(){
-        matchTime = 110;
+        matchTime = 41;
     }
 
     public void stop() {
         timer.cancel();
+    }
+
+    public int getMatchTime(){
+        return matchTime;
     }
 }

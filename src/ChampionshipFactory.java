@@ -3,22 +3,22 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class SerieABuilder implements ChampionshipBuilder {
+public class ChampionshipFactory {
     private Championship championship;
+    private String fileLocation;
 
-    SerieABuilder(){
+    public ChampionshipFactory(String fileLocation){
+        this.fileLocation = fileLocation;
         this.championship = new Championship();
     }
 
-    @Override
-    public void setName() {
-        championship.setName("SerieA");
+    public void setChampionshipName(String name){
+        championship.setName(name);
     }
 
-    @Override
     public void loadTeams(){
         try {
-            Scanner scanner = new Scanner(new File("./ChampionshipFiles/seriea"));
+            Scanner scanner = new Scanner(new File(fileLocation));
             ArrayList<Team> teams = new ArrayList<>();
             int i = 0;
             while(scanner.hasNextLine()){
@@ -32,9 +32,7 @@ public class SerieABuilder implements ChampionshipBuilder {
             System.out.println("File non trovato");
         }
     }
-
-    @Override
     public Championship getChampionship(){
-        return  championship;
+        return championship;
     }
 }

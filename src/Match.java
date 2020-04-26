@@ -42,9 +42,9 @@ public class Match {
 
     public void printMatch(){
         if(simulated)
-            System.out.println("\nCodice "+" "+code+" "+home.getName()+" "+away.getName()+" "+resultHome+"-"+resultAway);
+            System.out.println("\nCodice "+" "+code+" "+home.getName()+" - "+away.getName()+" "+resultHome+"-"+resultAway);
         else {
-            System.out.println("\nCodice" + " " + code + " " + home.getName() + " " + away.getName());
+            System.out.println("\nCodice" + " " + code + " " + home.getName() + " - " + away.getName());
             double[] tmp = bet.getQuotes();
             DecimalFormat df = new DecimalFormat("##.00");
             System.out.println("Quote: 1-"+df.format(tmp[0])+"  X-"+df.format(tmp[1])+"  2-"+df.format(tmp[2]));

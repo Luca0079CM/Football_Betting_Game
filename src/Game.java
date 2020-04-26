@@ -1,8 +1,8 @@
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.concurrent.Semaphore;
 
 public class Game implements Observer {
     private Championship championship;
@@ -10,76 +10,109 @@ public class Game implements Observer {
     private MatchesGenerator matchesGenerator;
     private int playedMatches;
     private Time time;
-    private boolean timeUp = false;
     private float money;
     private int moneyBet;
     private ArrayList<Result> pools;
     private DecimalFormat df = new DecimalFormat("0.00");
+    private Semaphore mutex = new Semaphore(0);
+    private boolean end = false;
 
     public Game() {
         time = Time.createTimer(this);
-        chooseChampionship(1);
-        championship.setRanking();
-        time.start();
         pools = new ArrayList<>();
         money = 10;
         moneyBet = 0;
+        chooseChampionship();
     }
 
-    public void chooseChampionship(int c) {
-        ChampionshipBuilder championshipBuilder;
+    private void chooseChampionship(){
+        System.out.println("Benvenuto nel gioco, scegli un campionato digitando il numero corrispondente");
+        System.out.println("1 - Serie A (Italia)");
+        System.out.println("2 - Premier League (Inghilterra)");
+        System.out.println("3 - LaLiga (Spagna)");
+        System.out.println("4 - Bundesliga (Germania)");
+        System.out.println("5 - Ligue 1 (Francia)");
+        System.out.println("6 - Serie B  (Italia)");
+        Scanner sc = new Scanner(System.in);
+        int c = sc.nextInt();
+        ChampionshipFactory championshipFactory;
         switch (c) {
             default:
-                championshipBuilder = null;
+                championshipFactory = null;
                 break;
             case 1:
-                championshipBuilder = new SerieABuilder();
+                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/seriea");
+                championshipFactory.setChampionshipName("Serie A");
+                break;
+            case 2:
+                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/premierleague");
+                championshipFactory.setChampionshipName("Premier League");
+                break;
+            case 3:
+                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/laliga");
+                championshipFactory.setChampionshipName("La Liga");
                 break;
         }
-        if (championshipBuilder != null) {
-            championshipBuilder.setName();
-            championshipBuilder.loadTeams();
+        if (championshipFactory != null) {
+            championshipFactory.loadTeams();
+            championship = championshipFactory.getChampionship();
+            System.out.println("\nBene! Hai scelto il campionato "+championship.getName()+" a cui partecipano "
+                    +championship.getTeams().size()+" squadre");
+            championship.setRanking();
+            waitSec(10);
+            time.start();
+            matchesGenerator = new MatchesGenerator(championship);
         } else {
             System.out.println("Il numero inserito non corrisponde a nessun campionato");
+            System.exit(0);
         }
-        championship = championshipBuilder.getChampionship();
-        matchesGenerator = new MatchesGenerator(championship);
     }
 
     @Override
     public void update() {
-        timeUp = true;
-        ArrayList<Result> results = new ArrayList<>();
-        for (Match m : currentMatches) {
-            results.add(new Result(m.getCode(), m.simulateMatch()));
-            m.printMatch();
+        int matchTime = time.getMatchTime();
+        if(matchTime%30 == 0){
+            System.out.println("Rimangono "+matchTime+" secondi all'inizio della prossima giornata!");
         }
-        money += checkPools(results, pools, moneyBet);
-        playedMatches++;
-        championship.setRanking();
-        moneyBet = 0;
-        pools.clear();
-        if (playedMatches == championship.getTeams().size() - 1) {
-            System.out.println("---------FINE CAMPIONATO----------");
-            System.out.println("Classifica finale:");
+        if(matchTime == 20){
+            System.out.println("Rimangono solo 20 secondi all'inizio della prossima giornata!\nAffrettati a completare le tue operazioni, ricorda che non verranno conteggiate dopo la fine del tempo");
+        }
+        if (matchTime==1) {
+            ArrayList<Result> results = new ArrayList<>();
+            for (Match m : currentMatches) {
+                results.add(new Result(m.getCode(), m.simulateMatch()));
+                m.printMatch();
+            }
+            money += checkPools(results, pools, moneyBet);
+            playedMatches++;
             championship.setRanking();
-            time.stop();
-        }else if(money < 1){
-            System.out.println("---------HAI FINITO I SOLDI----------");
-            time.stop();
-        }else {
-            newMatches();
-            timeUp = false;
-            showMenu();
+            moneyBet = 0;
+            pools.clear();
+            if (playedMatches == championship.getTeams().size() - 1) {
+                System.out.println("---------FINE CAMPIONATO----------");
+                System.out.println("Classifica finale:");
+                championship.setRanking();
+                time.stop();
+                end = true;
+                mutex.release();
+            }else if(money < 1){
+                System.out.println("---------HAI FINITO I SOLDI----------");
+                time.stop();
+                end = true;
+                mutex.release();
+            }else {
+                waitSec(10);
+                newMatches();
+                time.resetTimer();
+                mutex.release();
+            }
         }
     }
 
-    private void showMenu(){
-        boolean wait = false;
-        while (!timeUp && !wait) {
+    private void showMenu() throws InterruptedException{
+        while (!end) {
             try {
                 Scanner input = new Scanner(System.in);
-                input.reset();
                 System.out.println("\nPortafoglio:"+df.format(money)+" euro");
                 System.out.println("Che operazione vuoi fare? (Digita il numero corrispondente)");
                 System.out.println("1-Vedi i match della giornata n°" + (playedMatches + 1));
@@ -96,13 +129,13 @@ public class Game implements Observer {
                         System.out.println("\nNon c'è nessun operazione corrispondente al numero inserito");
                         break;
                     case 1:
-                        matchesGenerator.printMatches();
+                        printMatches();
                         break;
                     case 2:
                         bet();
                         break;
                     case 3:
-                        int tmp = 1;
+                        float tmp = 1;
                         if (!pools.isEmpty()) {
                             System.out.println("--Schedina--");
                             for(Result b : pools) {
@@ -129,9 +162,9 @@ public class Game implements Observer {
                         System.out.println("Potenziale vincita "+df.format(moneyBet*tmp)+" euro");
                         break;
                     case 4:
-                        wait = true;
                         System.out.println("Ok! Attendi il prossimo turno");
                         System.out.println("----ATTENZIONE---- Non inserire altri comandi o il gioco terminerà a inizio dei nuovi match");
+                        mutex.acquire();
                         break;
                     case 5:
                         if(moneyBet != 0){
@@ -149,7 +182,7 @@ public class Game implements Observer {
                         }
                         break;
                 }
-            } catch (InputMismatchException e) {
+            } catch (NoSuchElementException e) {
                 System.out.println("\nOperazione non valida");
             }
         }
@@ -157,11 +190,17 @@ public class Game implements Observer {
 
     public void newMatches() {
         currentMatches = matchesGenerator.generateMatches();
-        matchesGenerator.printMatches();
-        showMenu();
+        printMatches();
+        try {
+            if(playedMatches==0){
+                showMenu();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    private int checkPools(ArrayList<Result> results, ArrayList<Result> bets, int moneyBet){
+    private float checkPools(ArrayList<Result> results, ArrayList<Result> bets, float moneyBet){
         boolean win = true;
         if(bets.size()==0){
             System.out.println("\nNon avevi scommesso niente");
@@ -219,5 +258,20 @@ public class Game implements Observer {
                 System.out.println("Scommessa non valida!");
             }
         }
+    }
+
+    private void waitSec(int seconds){
+        try {
+            Thread.sleep(seconds*1000);
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void printMatches(){
+        System.out.println("\nMatches:");
+        for(Match m : currentMatches)
+            m.printMatch();
+        System.out.println("\n");
     }
 }

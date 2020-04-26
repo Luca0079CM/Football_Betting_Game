@@ -39,12 +39,5 @@ public class MatchesGenerator {
         alternator++;
         return matches;
     }
-
-    public void printMatches(){
-        System.out.println("\nMatches:");
-        for(Match m : matches)
-            m.printMatch();
-        System.out.println("\n");
-    }
 }
 
