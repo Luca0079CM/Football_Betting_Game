@@ -10,7 +10,7 @@ public class Game implements Observer {
     private MatchesGenerator matchesGenerator;
     private int playedMatches;
     private Time time;
-    private float money;
+    private float wallet;
     private int moneyBet;
     private ArrayList<Result> pools;
     private DecimalFormat df = new DecimalFormat("0.00");
@@ -20,7 +20,7 @@ public class Game implements Observer {
     Game() {
         time = Time.createTimer(this);
         pools = new ArrayList<>();
-        money = 10;
+        wallet = 10;
         moneyBet = 0;
         chooseChampionship();
     }
@@ -49,28 +49,22 @@ public class Game implements Observer {
                 championshipFactory = null;
                 break;
             case 1:
-                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/seriea");
-                championshipFactory.setChampionshipName("Serie A");
+                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/seriea", "Serie A");
                 break;
             case 2:
-                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/premierleague");
-                championshipFactory.setChampionshipName("Premier League");
+                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/premierleague", "Premier League");
                 break;
             case 3:
-                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/laliga");
-                championshipFactory.setChampionshipName("La Liga");
+                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/laliga", "La Liga");
                 break;
             case 4:
-                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/bundesliga");
-                championshipFactory.setChampionshipName("Bundesliga");
+                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/bundesliga", "Bundesliga");
                 break;
             case 5:
-                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/ligue1");
-                championshipFactory.setChampionshipName("Ligue 1");
+                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/ligue1", "Ligue 1");
                 break;
             case 6:
-                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/serieb");
-                championshipFactory.setChampionshipName("Serie B");
+                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/serieb", "Serie B");
                 break;
         }
         if (championshipFactory != null) {
@@ -103,7 +97,7 @@ public class Game implements Observer {
                 results.add(new Result(m.getCode(), m.simulateMatch()));
                 m.printMatch();
             }
-            money += checkPools(results, pools, moneyBet);
+            wallet += checkPools(results, pools, moneyBet);
             playedMatches++;
             championship.setRanking();
             moneyBet = 0;
@@ -112,15 +106,15 @@ public class Game implements Observer {
                 System.out.println("---------FINE CAMPIONATO----------");
                 System.out.println("Classifica finale:");
                 championship.setRanking();
-                if(money>=1000)
+                if(wallet >=1000)
                     System.out.println("COMPLIMENTI! Hai raggiunto l'obbiettivo");
                 else
                     System.out.println("Peccato, sarai più fortunato la prossima volta");
-                System.out.println("\nSoldi nel portafoglio:"+df.format(money));
+                System.out.println("\nSoldi nel portafoglio:"+df.format(wallet));
                 time.stop();
                 end = true;
                 mutex.release();
-            }else if(money < 1){
+            }else if(wallet < 1){
                 System.out.println("---------HAI FINITO I SOLDI----------");
                 time.stop();
                 end = true;
@@ -138,7 +132,7 @@ public class Game implements Observer {
         while (!end) {
             try {
                 Scanner input = new Scanner(System.in);
-                System.out.println("\nPortafoglio:"+df.format(money)+" euro");
+                System.out.println("\nPortafoglio:"+df.format(wallet)+" euro");
                 System.out.println("Che operazione vuoi fare? (Digita il numero corrispondente)");
                 System.out.println("1-Vedi i match della giornata n°" + (playedMatches + 1));
                 System.out.println("2-Scommetti su un match della giornata");
@@ -198,9 +192,9 @@ public class Game implements Observer {
                         System.out.println("\nSono accettati solo importi interi");
                         Scanner sc = new Scanner(System.in);
                         int tmp1 = sc.nextInt();
-                        if(tmp1 > 0 && tmp1 <= money){
+                        if(tmp1 > 0 && tmp1 <= wallet){
                             moneyBet = tmp1;
-                            money -= moneyBet;
+                            wallet -= moneyBet;
                         }else{
                             System.out.println("L'importo inserito non è valido");
                         }

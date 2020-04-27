@@ -4,7 +4,7 @@ public class Team implements Comparable <Team> {
     private Integer points;
 
 
-    Team(String name, int code, int strength){
+    Team(String name, int strength){
         this.name = name;
         this.strength = strength;
         this.points = 0;

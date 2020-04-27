@@ -5,7 +5,7 @@ class Championship {
     private String name;
     private ArrayList<Team> teams;
 
-    void setName(String name){
+    Championship(String name){
         this.name = name;
     }
 
