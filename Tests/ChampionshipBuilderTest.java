@@ -8,14 +8,14 @@ import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ChampionshipFactoryTest {
-    private ChampionshipFactory testChampionshipFactory;
+class ChampionshipBuilderTest {
+    private ChampionshipBuilder testChampionshipBuilder;
 
     @BeforeEach
     void setTestChampionshipFactory(){
-        testChampionshipFactory = new ChampionshipFactory("./ChampionshipFiles/seriea", "Serie A");
+        testChampionshipBuilder = new ChampionshipBuilder("./ChampionshipFiles/seriea", "Serie A");
         try {
-            testChampionshipFactory.loadTeams();
+            testChampionshipBuilder.loadTeams();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -34,19 +34,19 @@ class ChampionshipFactoryTest {
         testChampionship.setTeams(testTeams);
 
         for(int i = 0; i<testTeams.size(); i++){
-            assertEquals(testTeams.get(i).getName(), testChampionshipFactory.getChampionship().getTeams().get(i).getName());
+            assertEquals(testTeams.get(i).getName(), testChampionshipBuilder.getChampionship().getTeams().get(i).getName());
         }
     }
 
     @Test
     void getChampionship() {
-        assertEquals("Serie A", testChampionshipFactory.getChampionship().getName());
+        assertEquals("Serie A", testChampionshipBuilder.getChampionship().getName());
     }
 
     @Test
     void testEveryTeamHasLessThanMaxStrenght(){
         int max = 100;
-        for(Team t : testChampionshipFactory.getChampionship().getTeams())
+        for(Team t : testChampionshipBuilder.getChampionship().getTeams())
             assertTrue(t.getStrength() <= max);
     }
 
@@ -54,8 +54,8 @@ class ChampionshipFactoryTest {
 
     @Test
     void testFailingLoad() {
-        ChampionshipFactory testChampionshipFactory2 = new ChampionshipFactory("./Championship/nothing", " ");
-        Throwable exception = assertThrows(Exception.class, testChampionshipFactory2::loadTeams);
+        ChampionshipBuilder testChampionshipBuilder2 = new ChampionshipBuilder("./Championship/nothing", " ");
+        Throwable exception = assertThrows(Exception.class, testChampionshipBuilder2::loadTeams);
         assertEquals("./Championship/nothing (File o directory non esistente)", exception.getMessage());
     }
 }

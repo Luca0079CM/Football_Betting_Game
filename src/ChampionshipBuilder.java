@@ -3,11 +3,11 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-class ChampionshipFactory {
+class ChampionshipBuilder {
     private Championship championship;
     private String fileLocation;
 
-    ChampionshipFactory(String fileLocation, String name){
+    ChampionshipBuilder(String fileLocation, String name){
         this.fileLocation = fileLocation;
         this.championship = new Championship(name);
     }

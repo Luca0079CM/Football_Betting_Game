@@ -8,7 +8,7 @@ import java.util.concurrent.Semaphore;
 public class Game implements Observer {
     private Championship championship;
     private ArrayList<Match> currentMatches;
-    private MatchesGenerator matchesGenerator;
+    private MatchesBuilder matchesBuilder;
     private int playedMatches;
     private Time time;
     private float wallet;
@@ -44,43 +44,43 @@ public class Game implements Observer {
             System.out.println("Il numero inserito non corrisponde a nessun campionato");
             System.exit(0);
         }
-        ChampionshipFactory championshipFactory;
+        ChampionshipBuilder championshipBuilder;
         switch (c) {
             default:
-                championshipFactory = null;
+                championshipBuilder = null;
                 break;
             case 1:
-                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/seriea", "Serie A");
+                championshipBuilder = new ChampionshipBuilder("./ChampionshipFiles/seriea", "Serie A");
                 break;
             case 2:
-                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/premierleague", "Premier League");
+                championshipBuilder = new ChampionshipBuilder("./ChampionshipFiles/premierleague", "Premier League");
                 break;
             case 3:
-                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/laliga", "La Liga");
+                championshipBuilder = new ChampionshipBuilder("./ChampionshipFiles/laliga", "La Liga");
                 break;
             case 4:
-                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/bundesliga", "Bundesliga");
+                championshipBuilder = new ChampionshipBuilder("./ChampionshipFiles/bundesliga", "Bundesliga");
                 break;
             case 5:
-                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/ligue1", "Ligue 1");
+                championshipBuilder = new ChampionshipBuilder("./ChampionshipFiles/ligue1", "Ligue 1");
                 break;
             case 6:
-                championshipFactory = new ChampionshipFactory("./ChampionshipFiles/serieb", "Serie B");
+                championshipBuilder = new ChampionshipBuilder("./ChampionshipFiles/serieb", "Serie B");
                 break;
         }
-        if (championshipFactory != null) {
+        if (championshipBuilder != null) {
             try {
-                championshipFactory.loadTeams();
+                championshipBuilder.loadTeams();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-            championship = championshipFactory.getChampionship();
+            championship = championshipBuilder.getChampionship();
             System.out.println("\nBene! Hai scelto il campionato "+championship.getName()+" a cui partecipano "
                     +championship.getTeams().size()+" squadre");
             championship.setRanking();
             waitSec(10);
             time.start();
-            matchesGenerator = new MatchesGenerator(championship);
+            matchesBuilder = new MatchesBuilder(championship);
         } else {
             System.out.println("Il numero inserito non corrisponde a nessun campionato");
             System.exit(0);
@@ -212,7 +212,7 @@ public class Game implements Observer {
     }
 
     void newMatches() {
-        currentMatches = matchesGenerator.generateMatches();
+        currentMatches = matchesBuilder.generateMatches();
         printMatches();
         try {
             if(playedMatches==0){

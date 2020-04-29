@@ -1,14 +1,14 @@
 import java.util.ArrayList;
 import java.util.Collections;
 
-class MatchesGenerator {
+class MatchesBuilder {
     private int nTeams;
     private ArrayList<Team> casa;
     private ArrayList<Team> trasferta;
     private static int alternator = 0;
     private static int code = 0;
 
-    MatchesGenerator(Championship championship){
+    MatchesBuilder(Championship championship){
         ArrayList<Team> teams = championship.getTeams();
         nTeams = teams.size();
         Collections.shuffle(teams);
