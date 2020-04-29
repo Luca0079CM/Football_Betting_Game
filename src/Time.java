@@ -8,14 +8,14 @@ class Time extends Subject {
     private static int delay;
     private static int period;
 
-    static Time createTimer(Game game){
-        if(timer==null)
-            time = new Time(game);
+    static Time createTime(Observer observer){
+        if(time==null)
+            time = new Time(observer);
         return time;
     }
 
-    private Time(Game game){
-        observer = game;
+    private Time(Observer observer){
+        this.observer = observer;
         delay = 1000;
         period = 1000;
         resetTimer();

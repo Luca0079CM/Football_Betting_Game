@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
@@ -18,7 +19,7 @@ public class Game implements Observer {
     private boolean end = false;
 
     Game() {
-        time = Time.createTimer(this);
+        time = Time.createTime(this);
         pools = new ArrayList<>();
         wallet = 10;
         moneyBet = 0;
@@ -68,7 +69,11 @@ public class Game implements Observer {
                 break;
         }
         if (championshipFactory != null) {
-            championshipFactory.loadTeams();
+            try {
+                championshipFactory.loadTeams();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
             championship = championshipFactory.getChampionship();
             System.out.println("\nBene! Hai scelto il campionato "+championship.getName()+" a cui partecipano "
                     +championship.getTeams().size()+" squadre");
@@ -218,7 +223,7 @@ public class Game implements Observer {
         }
     }
 
-    private float checkPools(ArrayList<Result> results, ArrayList<Result> bets, float moneyBet){
+     private float checkPools(ArrayList<Result> results, ArrayList<Result> bets, float moneyBet){
         boolean win = true;
         if(bets.size()==0){
             System.out.println("\nNon avevi scommesso niente");
