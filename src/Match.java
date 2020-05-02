@@ -1,6 +1,7 @@
 import java.text.DecimalFormat;
 
 class Match {
+    private static final int homeBonus = 10;
     private int code;
     private Team home;
     private int resultHome;
@@ -8,7 +9,6 @@ class Match {
     private int resultAway;
     private boolean simulated;
     private Bet bet;
-    private DecimalFormat df = new DecimalFormat("0.00");
 
     Match(int code, Team home, Team away){
         this.code = code;
@@ -21,9 +21,9 @@ class Match {
     String simulateMatch(){
         simulated = true;
         for(int i=0;i<10;i++){
-            if(home.getStrength()>=Math.random()*300)
+            if(home.getStrength() + homeBonus >=Math.random()*300)
                 resultHome++;
-            if(away.getStrength()>=Math.random()*300)
+            if(away.getStrength() - homeBonus >=Math.random()*300)
                 resultAway++;
         }
         if(resultHome>resultAway) {
@@ -42,6 +42,7 @@ class Match {
     }
 
     void printMatch(){
+        DecimalFormat df = new DecimalFormat("0.00");
         if(simulated)
             System.out.println("\nCodice "+" "+code+" "+home.getName()+" - "+away.getName()+" "+resultHome+"-"+resultAway);
         else {
