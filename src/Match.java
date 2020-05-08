@@ -1,7 +1,7 @@
 import java.text.DecimalFormat;
 
 class Match {
-    private static final int homeBonus = 10;
+    static final int homeBonus = 10;
     private int code;
     private Team home;
     private int resultHome;

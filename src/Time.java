@@ -3,10 +3,10 @@ import java.util.TimerTask;
 
 class Time extends Subject {
     private static Time time;
-    private static int matchTime;
-    private static Timer timer;
-    private static int delay;
-    private static int period;
+    private int matchTime;
+    private Timer timer;
+    private int delay;
+    private int period;
 
     static Time createTime(Observer observer){
         if(time==null)

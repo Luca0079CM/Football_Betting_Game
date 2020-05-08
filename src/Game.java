@@ -102,7 +102,7 @@ public class Game implements Observer {
                 results.add(new Result(m.getCode(), m.simulateMatch()));
                 m.printMatch();
             }
-            wallet += checkPools(results, pools, moneyBet);
+            wallet += checkPool(results, pools, moneyBet);
             playedMatches++;
             championship.setRanking();
             moneyBet = 0;
@@ -156,34 +156,10 @@ public class Game implements Observer {
                         printMatches();
                         break;
                     case 2:
-                        bet();
+                        makeBet();
                         break;
                     case 3:
-                        float tmp = 1;
-                        if (!pools.isEmpty()) {
-                            System.out.println("--Schedina--");
-                            for(Result b : pools) {
-                                for(Match m : currentMatches){
-                                    if(m.getCode() == b.getMatchCode()) {
-                                        System.out.println();
-                                        m.printMatch();
-                                        System.out.println("Scommessa: "+b.getResult());
-                                        if(b.getResult().equals("1")){
-                                            tmp *= m.getBet().getQuotes()[0];
-                                        }else if(b.getResult().equals("X")){
-                                            tmp *= m.getBet().getQuotes()[1];
-                                        }else{
-                                            tmp *= m.getBet().getQuotes()[2];
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            System.out.println("La schedina è vuota");
-                            break;
-                        }
-                        System.out.println("\nScommessi "+df.format(moneyBet)+" euro");
-                        System.out.println("Potenziale vincita "+df.format(moneyBet*tmp)+" euro");
+                        showPools();
                         break;
                     case 4:
                         System.out.println("Ok! Attendi il prossimo turno");
@@ -223,7 +199,7 @@ public class Game implements Observer {
         }
     }
 
-     private float checkPools(ArrayList<Result> results, ArrayList<Result> bets, float moneyBet){
+     private float checkPool(ArrayList<Result> results, ArrayList<Result> bets, float moneyBet){
         boolean win = true;
         if(bets.size()==0){
             System.out.println("\nNon avevi scommesso niente");
@@ -262,7 +238,7 @@ public class Game implements Observer {
         return moneyBet;
     }
 
-    private void bet(){
+    private void makeBet(){
         System.out.println("Inserisci il codice della partita su cui vuoi scommettere:");
         Scanner sc = new Scanner(System.in);
         int code = sc.nextInt();
@@ -298,6 +274,34 @@ public class Game implements Observer {
                 System.out.println("Scommessa non valida!");
             }
         }
+    }
+
+    private void showPools(){
+        float tmp = 1;
+        if (!pools.isEmpty()) {
+            System.out.println("--Schedina--");
+            for(Result b : pools) {
+                for(Match m : currentMatches){
+                    if(m.getCode() == b.getMatchCode()) {
+                        System.out.println();
+                        m.printMatch();
+                        System.out.println("Scommessa: "+b.getResult());
+                        if(b.getResult().equals("1")){
+                            tmp *= m.getBet().getQuotes()[0];
+                        }else if(b.getResult().equals("X")){
+                            tmp *= m.getBet().getQuotes()[1];
+                        }else{
+                            tmp *= m.getBet().getQuotes()[2];
+                        }
+                    }
+                }
+            }
+            System.out.println("\nScommessi "+df.format(moneyBet)+" euro");
+            System.out.println("Potenziale vincita "+df.format(moneyBet*tmp)+" euro");
+        } else {
+            System.out.println("La schedina è vuota");
+        }
+
     }
 
     private void waitSec(int seconds){

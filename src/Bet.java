@@ -12,8 +12,8 @@ class Bet {
     }
 
     private void createBet() {
-        float pHome = (float)homeStrenght/max;
-        float pAway = (float)awayStrenght/max;
+        float pHome = (float)(homeStrenght+Match.homeBonus)/max;
+        float pAway = (float)(awayStrenght+Match.homeBonus)/max;
         float qHome = 1 - pHome;
         float qAway = 1 - pAway;
 
@@ -25,8 +25,8 @@ class Bet {
 
 
         for(int i=0; i<=n; i++) {
-            probCasa[i] = bernoulli(i, pHome, qHome);
-            probTras[i] = bernoulli(i,pAway,qAway);
+            probCasa[i] = binomial(i, pHome, qHome);
+            probTras[i] = binomial(i,pAway,qAway);
         }
 
         for (int i=0; i<=n; i++){
@@ -45,7 +45,7 @@ class Bet {
         quote2 = 1.1/prob2;
     }
 
-    private float bernoulli(int k, float p, float q) {
+    private float binomial(int k, float p, float q) {
         float prob= (float)(factorial(n) / (factorial(k)* factorial(n-k)) );
         for(int i=0;i<k;i++) {
             prob *= p;

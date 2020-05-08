@@ -3,8 +3,8 @@ import java.util.Collections;
 
 class MatchesBuilder {
     private int nTeams;
-    private ArrayList<Team> casa;
-    private ArrayList<Team> trasferta;
+    private ArrayList<Team> home;
+    private ArrayList<Team> away;
     private static int alternator = 0;
     private static int code = 0;
 
@@ -12,11 +12,11 @@ class MatchesBuilder {
         ArrayList<Team> teams = championship.getTeams();
         nTeams = teams.size();
         Collections.shuffle(teams);
-        casa = new ArrayList<>();
-        trasferta = new ArrayList<>();
+        home = new ArrayList<>();
+        away = new ArrayList<>();
         for (int i = 0; i < nTeams /2; i++) {
-            casa.add(teams.get(i));
-            trasferta.add(teams.get(teams.size()-1-i));
+            home.add(teams.get(i));
+            away.add(teams.get(teams.size()-1-i));
         }
     }
 
@@ -25,16 +25,16 @@ class MatchesBuilder {
         ArrayList<Match> matches = new ArrayList<>();
         if (alternator % 2 == 1) {
             for (int j = 0; j < nTeams /2 ; j++)
-                matches.add(new Match(++code, trasferta.get(j), casa.get(j)));
+                matches.add(new Match(++code, away.get(j), home.get(j)));
         }else {
             for (int j = 0; j < nTeams /2 ; j++)
-                matches.add(new Match(++code, casa.get(j), trasferta.get(j)));
+                matches.add(new Match(++code, home.get(j), away.get(j)));
 
         }
-        trasferta.add(0, casa.get(1));
-        Team riporto = trasferta.remove(trasferta.size()-1);
-        casa.remove(1);
-        casa.add(riporto);
+        away.add(0, home.get(1));
+        Team riporto = away.remove(away.size()-1);
+        home.remove(1);
+        home.add(riporto);
         alternator++;
         return matches;
     }
